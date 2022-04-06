@@ -1,7 +1,7 @@
 # wireguard-configurator
 Interactive Wireguard configuration tool for server and clients
 ## RUS
-### Description
+### Описание
 Интерактивный инструмент развертывания и обслуживания VPN-сервера для индивидуального использования на базе WireGuard.
 
 Не требует навыков администрирования Linux-систем.
@@ -35,6 +35,8 @@ wget -O wireguard-configurator.sh "https://raw.githubusercontent.com/SPIDER-L33T
 ```bash
 ./wireguard-configurator.sh
 ```
+
+Программу для клиента можно скачать с официального сайта: https://www.wireguard.com/install/
 ## ENG
 ### Description
 An interactive VPN server deployment and maintenance tool for individual use based on WireGuard.
