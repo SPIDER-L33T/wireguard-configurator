@@ -56,10 +56,18 @@ After logging in as root user, run the command:
 ```bash
 wget -O wireguard-configurator.sh "https://raw.githubusercontent.com/SPIDER-L33T/wireguard-configurator/main/wireguard-configurator.sh" && chmod +x wireguard-configurator.sh && ./wireguard-configurator.sh
 ```
+![image](https://user-images.githubusercontent.com/8372513/162054779-b4a55e49-e560-4f10-906f-82a55f565d6e.png)
 
 and answer the questions of the interactive configurator.
 
+There will be something like this:
+
+![image](https://user-images.githubusercontent.com/8372513/162055457-408d47d3-8221-4bb9-8f17-dd0ef8e78c8a.png)
+
+After WireGuard is installed, the addition of the first client will automatically start.
+
 In the future, if you need to add or remove a client, just restart the configurator with the command:
+
 ```bash
 ./wireguard-configurator.sh
 ```
