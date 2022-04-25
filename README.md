@@ -62,7 +62,7 @@ and answer the questions of the interactive configurator.
 
 There will be something like this:
 
-![image](https://user-images.githubusercontent.com/8372513/162055457-408d47d3-8221-4bb9-8f17-dd0ef8e78c8a.png)
+![image](https://user-images.githubusercontent.com/8372513/165060265-e0af730f-193a-413d-bc72-dfa91fc108c5.png)
 
 After WireGuard is installed, the addition of the first client will automatically start.
 
