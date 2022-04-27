@@ -3,7 +3,7 @@
 # Name: WireGuard configurator
 # Creator: SPIDER-L33T
 # Created: 06.04.2022
-# Lat update: 06.04.2022
+# Lat update: 27.04.2022
 # =============================
 
 TLANG='ENG'
@@ -34,8 +34,8 @@ INSTOS_RUS="---=== Этот установщик работает только �
 DEBVER_ENG="Current Debian version is not supported. Please use Debian 9 or later"
 DEBVER_RUS="Текущая версия Debian не поддерживается. Используйте Debian 9 или старше"
 
-MAINMENUTEXT_ENG="Welcome to WireGuard-configurator!\nThe git repository is available at: https://github.com/SPIDER-L33T/wireguard-configurator\n\n `echo ${COLORORANGE}` WireGuard is already installed! `echo ${COLOREND}` \n\nWhat do you want to do?\n   1) Add a new user\n   2) Delete existing user\n   3) View QR existing user\n   4) Rename existing user\n   5) Uninstall WireGuard\n   6) Exit\n"
-MAINMENUTEXT_RUS="Вас приветствует WireGuard-configurator!\nРепозитарий git тут: https://github.com/SPIDER-L33T/wireguard-configurator\n\n `echo ${COLORORANGE}` WireGuard Уже установлен! `echo ${COLOREND}` \n\nЧего теперь хотите сделать?\n   1) Добавить пользователя\n   2) Удалить пользователя\n   3) Показать QR пользователя\n   4) Переименовать пользователя\n   5) Удалить WireGuard\n   6) Выйти\n"
+MAINMENUTEXT_ENG="Welcome to WireGuard-configurator!\nThe git repository is available at: https://github.com/SPIDER-L33T/wireguard-configurator\n\n `echo ${COLORORANGE}` WireGuard is already installed! `echo ${COLOREND}` \n\nWhat do you want to do?\n   1) Add a new user\n   2) Delete existing user\n   3) View QR existing user\n   4) View config-file existing user\n  5) Rename existing user\n   6) Uninstall WireGuard\n   7) Exit\n"
+MAINMENUTEXT_RUS="Вас приветствует WireGuard-configurator!\nРепозитарий git тут: https://github.com/SPIDER-L33T/wireguard-configurator\n\n `echo ${COLORORANGE}` WireGuard Уже установлен! `echo ${COLOREND}` \n\nЧего теперь хотите сделать?\n   1) Добавить пользователя\n   2) Удалить пользователя\n   3) Показать QR пользователя\n   4) Показать конфигурацию пользователя\n   5) Переименовать пользователя\n   6) Удалить WireGuard\n   7) Выйти\n"
 
 MAINMENUSELTEXT_ENG="Select an option"
 MAINMENUSELTEXT_RUS="Выберите одно из"
@@ -117,6 +117,12 @@ SELCL_RUS="Выберите клиента из списка"
 
 QRUSERSEL_ENG="\nSelect the existing client you want to display QR"
 QRUSERSEL_RUS="\nВыберите клиента, конфиг которого нужно показать как QR"
+
+CFGUSERSEL_ENG="\nSelect the existing client you want to view config-file on display "
+CFGUSERSEL_RUS="\nВыберите клиента, конфиг которого нужно показать на экране"
+
+CFGUSERVIEW_ENG="\nCopy the text shown below and send it to the client computer: \n\n"
+CFGUSERVIEW_RUS="\nСкопируйте показанный ниже текст и передайте его на клиентский компьютер: \n\n"
 
 RENAMECL_ENG="Enter new name for client"
 RENAMECL_RUS="Введите новое имя для клиента"
@@ -359,6 +365,33 @@ function displayQR() {
 	exit 1	
 }
 
+function displayCfg() {
+	NUMBER_OF_CLIENTS=$(grep -c -E "^### Client" "/etc/wireguard/${SERVER_WG_NIC}.conf")
+	if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then		
+		eval echo -e "$`echo DELUSERNO"_"$TLANG`"
+		exit 1
+	fi
+	eval echo -e "$`echo CFGUSERSEL"_"$TLANG`"
+	grep -E "^### Client" "/etc/wireguard/${SERVER_WG_NIC}.conf" | cut -d ' ' -f 3 | nl -s ') '
+	echo -e "\t---------\n"
+	echo '     '"`eval echo -e $\`echo DELUSERMENU_$TLANG\``"
+	if [[ ${NUMBER_OF_CLIENTS} == '1' ]];then			
+			read -rp "`eval echo $\`echo SELCL_$TLANG\`` [1]: " CLIENT_NUMBER
+		else
+			read -rp "`eval echo $\`echo SELCL_$TLANG\`` [1-${NUMBER_OF_CLIENTS}]: " CLIENT_NUMBER
+	fi
+	if [[ ${CLIENT_NUMBER} -eq 'm' ]];then
+		mainMenu
+		exit 1
+	fi
+	CLIENT_NAME=$(grep -E "^### Client" "/etc/wireguard/${SERVER_WG_NIC}.conf" | cut -d ' ' -f 3 | sed -n "${CLIENT_NUMBER}"p)
+    eval echo -e "$`echo CFGUSERVIEW"_"$TLANG`"
+    cat /etc/wireguard/clients/${SERVER_WG_NIC}-client-${CLIENT_NAME}.conf
+	echo -e "\n\n"
+	exit 1
+
+}
+
 function renameClient() {
 	NUMBER_OF_CLIENTS=$(grep -c -E "^### Client" "/etc/wireguard/${SERVER_WG_NIC}.conf")
 	if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then		
@@ -440,8 +473,8 @@ function mainMenu() {
     MAINMENU_OPT=""	
 	eval echo -e "$`echo MAINMENUTEXT"_"$TLANG`"
 	
-	until [[ ${MAINMENU_OPT} =~ ^[1-6]$ ]]; do
-		read -rp "`eval echo $\`echo MAINMENUSELTEXT_$TLANG\`` [1-6]: " MAINMENU_OPT
+	until [[ ${MAINMENU_OPT} =~ ^[1-7]$ ]]; do
+		read -rp "`eval echo $\`echo MAINMENUSELTEXT_$TLANG\`` [1-7]: " MAINMENU_OPT
 	done
 	case "${MAINMENU_OPT}" in
 	1)
@@ -454,12 +487,15 @@ function mainMenu() {
 	    displayQR
 	    ;;
 	4)
+		displayCfg
+		;;
+	5)
 	    renameClient
 	    ;;
-	5)
+	6)
 		uninstallWg
 		;;
-	6)
+	7)
 		exit 0
 		;;
 	esac
